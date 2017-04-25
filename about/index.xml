@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>About this site on 0xbc&#39;s blog</title>
+    <link>http://0xbc.blog/about/</link>
+    <description>Recent content in About this site on 0xbc&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-AU</language>
+    <lastBuildDate>Tue, 25 Apr 2017 21:13:40 +0930</lastBuildDate>
+    
+	<atom:link href="http://0xbc.blog/about/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+  </channel>
+</rss>

@@ -5,10 +5,28 @@
     <link>http://0xbc.blog/categories/</link>
     <description>Recent content in Categories on 0xbc&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en-AU</language>
     
 	<atom:link href="http://0xbc.blog/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ctf</title>
+      <link>http://0xbc.blog/categories/ctf/</link>
+      <pubDate>Tue, 25 Apr 2017 21:53:48 +0930</pubDate>
+      
+      <guid>http://0xbc.blog/categories/ctf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Writeups</title>
+      <link>http://0xbc.blog/categories/writeups/</link>
+      <pubDate>Tue, 25 Apr 2017 21:53:48 +0930</pubDate>
+      
+      <guid>http://0xbc.blog/categories/writeups/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>
