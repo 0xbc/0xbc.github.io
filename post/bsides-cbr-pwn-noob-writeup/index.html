@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BSides Canberra pwn-noob CTF Write-up | 0xbc&#39;s blog</title>
-    <meta name="description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF">
-    <meta name="keywords" content="linux, binary-exploitation">
+    <meta name="description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF.">
+    <meta name="keywords" content="linux, binary-exploitation, bsides-cbr-2017">
     
     
     
@@ -17,14 +17,14 @@
 
 
     <meta property="og:title" content="BSides Canberra pwn-noob CTF Write-up" />
-<meta property="og:description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF" />
+<meta property="og:description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/" />
 
 
 
-<meta property="article:published_time" content="2017-04-25T21:53:48&#43;09:30"/>
-<meta property="article:modified_time" content="2017-04-25T21:53:48&#43;09:30"/>
+<meta property="article:published_time" content="2017-04-27T22:47:58&#43;09:30"/>
+<meta property="article:modified_time" content="2017-04-27T22:47:58&#43;09:30"/>
 
 
 
@@ -213,15 +213,15 @@ article [itemprop="description"] {
   <article itemscope itemtype="http://schema.org/BlogPosting">
     
 <meta itemprop="name" content="BSides Canberra pwn-noob CTF Write-up">
-<meta itemprop="description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF">
+<meta itemprop="description" content="A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF.">
 
 
-<meta itemprop="dateModified" content="2017-04-25T21:53:48&#43;09:30" />
-<meta itemprop="wordCount" content="227">
+<meta itemprop="dateModified" content="2017-04-27T22:47:58&#43;09:30" />
+<meta itemprop="wordCount" content="1505">
 
 
 
-<meta itemprop="keywords" content="ctf-writeups,binary-exploitation,linux," />
+<meta itemprop="keywords" content="CTF-writeups,binary-exploitation,bsides-cbr-2017,linux," />
 
     <header>
       <h1 itemprop="headline">BSides Canberra pwn-noob CTF Write-up</h1>
@@ -230,26 +230,207 @@ article [itemprop="description"] {
   <circle cx="16" cy="16" r="14" />
   <path d="M16 8 L16 16 20 20" />
 </svg>
-<span>2 minute read</span>
+<span>8 minute read</span>
 <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
   <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
 </svg>
 
-  Published: <time datetime="2017-04-25T21:53:48&#43;09:30">25 Apr, 2017</time>
+  Published: <time datetime="2017-04-27T22:47:58&#43;09:30">27 Apr, 2017</time>
 
 
       </p>
     </header>
     
-      <blockquote itemprop="description">A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF</blockquote>
+      <blockquote itemprop="description">A writeup for the pwn-noob exploit challenge at the BSides Canberra 2017 CTF.</blockquote>
     
     
+  <details>
+    <summary>Table of Contents</summary>
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#overview-manual-inspection-and-disassembly">Overview, Manual Inspection and Disassembly</a></li>
+<li><a href="#poking-the-bear">Poking the Bear</a></li>
+<li><a href="#fly-in-the-ointment">Fly in the Ointment</a></li>
+<li><a href="#crack-in-the-armor">Crack in the Armor</a></li>
+<li><a href="#onwards-to-victory-eventually">Onwards to Victory&hellip; (eventually)</a></li>
+<li><a href="#exploit-script">Exploit Script</a></li>
+</ul>
+</nav>
+  </details>
+  <script>
+    const el = document.querySelector('details summary')
+    el.onclick = () => {
+      (function(l,o,a,d,e,r){e=o.createElement(a),r=o.getElementsByTagName(a)[0];e.async=1;e.src=d;r.parentNode.insertBefore(e,r)})(window,document,'script','/js/smoothscroll.js');
+      el.onclick = null
+    }
+    document.querySelectorAll('#TableOfContents a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelector(
+          link.href.slice(link.href.indexOf('#'))
+        ).scrollIntoView({ behavior: 'smooth' })
+      })
+    })
+  </script>
+
 
     <div itemprop="articleBody">
-      <p>Coming soon&hellip;</p>
+      <h1 id="introduction">Introduction</h1>
+
+<p>The first exploitation (pwnable) challenge at the BSides Canberra 2017 CTF was <a href="https://github.com/OJ/bsides-2017-ctf-docker/tree/master/pwn-noob">pwn-noob</a> - and clearly, I&rsquo;m an über-noob because I couldn&rsquo;t figure out how to pwn it during the comp.</p>
+
+<p>However, a couple of nights later (with a couple of gentle nudges from CTF-organiser extraordinaire <a href="https://twitter.com/TheColonial">OJ</a>), I finally got there! Here&rsquo;s a brief rundown of the challenge binary, concluding with a script which implements a working exploit.</p>
 
 <p>
-<img src="/img/pwn-noob-main.png" style="width:100%"/>Disassembly</img> is fun!
+<div class="alert alert-info">Note that (almost) all of the BSides Canberra 2017 CTF challenges can be spun up at your leisure using Docker - see OJ&rsquo;s <a href="http://buffered.io/posts/bsidescbr-ctf-round-up/">blog</a> and corresponding <a href="https://github.com/OJ/bsides-2017-ctf-docker/">GitHub repo</a> for more info.</div></p>
+
+<h1 id="overview-manual-inspection-and-disassembly">Overview, Manual Inspection and Disassembly</h1>
+
+<p>A version of the binary is provided for local inspection and exploit development (noob_download), but the version with the challenge flag runs remotely and needs to be pwned via a network service running on port 6000 on a Docker image.</p>
+
+<div class="alert alert-info">If you've never attempted a binary exploitation challenge during a CTF before, the idea is usually to try and find an exploitable flaw in a piece of code that can be leveraged into arbitrary code execution. In a typical scenario, you'd then run shellcode via your exploit in order to retrieve a flag from a target machine.</div>
+
+<p>The binary in this case appeared to be a 64-bit ELF executable:</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ file noob_download
+noob_download: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=4f4bee3f353654b6ab1343af0af59bf888cc21dc, not stripped
+</code></pre></div>
+
+
+<p>&ldquo;LSB executable&rdquo; (to my knowledge) indicates that we&rsquo;re not dealing with position-independent code (as opposed to &ldquo;LSB shared object&rdquo;), so ASLR bypasses weren&rsquo;t required.</p>
+
+<p>The main method (located at address 0x400686) disassembles as per the following:</p>
+
+<p><img src="/img/pwn-noob-main.png" style="width:100%"/></p>
+
+<p>Further manual inspection of the binary also revealed the following string in the .rodata section, which looked pretty important&hellip;</p>
+
+<p><img src="/img/pwn-noob-rodata.png" style="width:100%"/></p>
+
+<p>So - the flag string was located at 0x400800, altough the content of the flag on the challenge server was different, of course (drat!).</p>
+
+<h1 id="poking-the-bear">Poking the Bear</h1>
+
+<p>Time to run the program:
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ ./noob_download
+Gimme the data: hello
+Go on then, break me: ok then
+$
+</code></pre></div>
+</p>
+
+<p>So, as far as interactivity goes, the program does the following:</p>
+
+<ul>
+<li>Reads from stdin using fgets, storing up to 0x20 (32) bytes of input in the statically-allocated array labeled whateva.</li>
+<li>Reads from stdin again using fgets, this time storing up to 0x190 (400) bytes of input in the stack variable labeled var_28 (by the disassembler).</li>
+</ul>
+
+<p>The whateva label points to a 32-byte area in the .bss section, located at 0x601040:</p>
+
+<p><img src="/img/pwn-noob-bss.png" style="width:100%"/></p>
+
+<p>So, given that we&rsquo;re able to get 400 bytes of input on the stack at a location only 0x28 (40) bytes from the frame pointer (during the second lot of input), it seemed like we might be in smash-the-stack-for-fun-and-profit territory. To wit:</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ python -c &quot;print &#39;\n&#39; + &#39;A&#39;*200&quot; | ./noob_download
+Gimme the data: Go on then, break me: *** stack smashing detected ***: ./noob_download terminated
+Aborted (core dumped)
+</code></pre></div>
+
+
+<h1 id="fly-in-the-ointment">Fly in the Ointment</h1>
+
+<p>Bah, humbug&hellip; a stack canary! Note the line of disassembly at 0x400699, which reads a value from fs:[0x28] and subsequently places it on the stack at var_10. The function epilogue checks that this value hasn&rsquo;t been altered (0x400738 - 0x400745) - if it has, then it calls __stack_chk_fail, which terminates execution.</p>
+
+<p>I checked to see whether the value being checked was static (and hence could simply be placed on the stack in the right spot as part of the payload), but alas, the canary was being randomly generated during each run of the program. As such, I wasn&rsquo;t going to be able to simply overwrite the saved return pointer and gain code execution.</p>
+
+<p>At this point, I wasn&rsquo;t really sure what to do next, having never tried to defeat a stack canary before. So, I just started noodling around. Playing around with different payload sizes revealed that the output of the canary check was changing, and in some cases, completely disappearing:</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ python -c &quot;print &#39;\n&#39; + &#39;A&#39;*263&quot; | ./noob_download
+Gimme the data: Go on then, break me: *** stack smashing detected ***:  terminated
+Aborted (core dumped)
+$ python -c &quot;print &#39;\n&#39; + &#39;A&#39;*265&quot; | ./noob_download
+Gimme the data: Go on then, break me: Segmentation fault (core dumped)
+</code></pre></div>
+
+
+<p>Note that with 263 As in the payload, the filename disappeared from the error message, and with 265 As, the message disappeared altogether.</p>
+
+<h1 id="crack-in-the-armor">Crack in the Armor</h1>
+
+<p>As it turns out, the binary was compiled using the FORTIFY_SOURCE option, with an old version of gcc which is vulnerable to an information disclosure bug, as per <a href="http://vulnfactory.org/blog/2010/04/27/fun-with-fortify_source/">http://vulnfactory.org/blog/2010/04/27/fun-with-fortify_source/</a>.</p>
+
+<p>To understand what&rsquo;s going on here, consider the following description of what the stack looks like during the execution of main, taken from <a href="https://www.win.tue.nl/~aeb/linux/hh/stack-layout.html">https://www.win.tue.nl/~aeb/linux/hh/stack-layout.html</a>. (Note that lower addresses are shown at the top in this representation.)</p>
+
+<hr />
+
+<p>&hellip;<br />
+local variables of main<br />
+saved registers of main<br />
+return address of main<br />
+argc<br />
+argv<br />
+envp<br />
+stack from startup code<br />
+argc<br />
+argv pointers<br />
+NULL that ends argv[]<br />
+environment pointers<br />
+NULL that ends envp[]<br />
+ELF Auxiliary Table<br />
+argv strings<br />
+environment strings<br />
+program name<br />
+NULL</p>
+
+<hr />
+
+<p>What we&rsquo;ve done is smashed all the way down from &ldquo;local variables of main&rdquo; and overwritten argv[0] in the &ldquo;argv pointers&rdquo; section. The canary-checking code appears to be blindly reading the contents of argv[0] to get a pointer to a string for printing out the filename as part of its error message.</p>
+
+<p>That means that we can potentially disclose any strings in the running binary by overwriting argv[0] with a custom location&hellip; such as, the flag contents at 0x400800!</p>
+
+<p>After some trial-and-error to get the layout right, I found that the following worked:
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ python -c &quot;print &#39;\n&#39; + &#39;A&#39;*264 + &#39;\x00\x08\x40\x00\x00\x00\x00\x00&#39;&quot; | ./noob_download
+Gimme the data: Go on then, break me: *** stack smashing detected ***: BSIDES_CTF{FLAGISHEREONTHESERVER!} terminated
+Aborted (core dumped)
+</code></pre></div>
+</p>
+
+<p>Huzzah! We&rsquo;ve smashed down to argv[0] and overwritten it with a (64-bit little-endian) pointer to the flag string. Surely all that remains is to add some scaffolding using sockets to connect to the challenge service (see the script at the end for an example of this), deliver our payload and we&rsquo;re home&hellip; right?? #flaglyfe</p>
+
+<h1 id="onwards-to-victory-eventually">Onwards to Victory&hellip; (eventually)</h1>
+
+<p>It turns out, however, that when you fire this exploit against the challenge network service, there&rsquo;s one more wrinkle to overcome:</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ python pwn-noob.py
+Gimme the data:
+Go on then, break me:
+ 
+  
+  *** $TERM not set. No stack check fail for you! ***
+</code></pre></div>
+
+
+<p>Seems like the server wasn&rsquo;t going to surrender the flag without the TERM environment variable being specified. Looks like we&rsquo;d need to overwrite the area where environment variable strings are stored&hellip;</p>
+
+<p>As per the stack representation above, after the argv pointers, there&rsquo;s a &ldquo;NULL that ends argv[]&rdquo; and then &ldquo;environment pointers&rdquo;: a.k.a. envp[0]. So, we just have to smash down a bit further, past the NULL (which will be 8 bytes for a 64-bit pointer) and then we can overwrite envp[0] with a pointer to something we control, in which we&rsquo;ll place a string that defines the TERM variable.</p>
+
+<p>I got stuck at this point for aaaaagges, as my initial idea was to place a TERM string in the start of my payload, and then place a pointer back to it at envp[0]. I actually don&rsquo;t quite understand why this approach wasn&rsquo;t working - all I can tell you is, don&rsquo;t try it unless you want to run a serious risk of going insane!</p>
+
+<p>As it turns out, I had been completely overlooking the other (arguably far more obvious) location we have control of - whateva, a.k.a. 0x601040. All that was required was to do read in a TERM string during the first fgets call,
+overwrite envp[0] with a pointer to it, and we&rsquo;d be home (sans another nasty &ldquo;surprise&rdquo;, anyway).</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ python pwn-noob.py
+Gimme the data:
+Go on then, break me:
+*** stack smashing detected *** BSIDES_CTF{d3m_st@kk_proTectionz!} terminated
+</code></pre></div>
+
+
+<p>Phew! A script to automate the exploit is shown below.</p>
+
+<h1 id="exploit-script">Exploit Script</h1>
+
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -276,13 +457,9 @@ article [itemprop="description"] {
  
 <span class="n">envstring</span> <span class="o">=</span> <span class="s1">&#39;TERM=a&#39;</span>   <span class="c1"># it doesn&#39;t actually matter what you set TERM to,</span>
                        <span class="c1"># so long as it&#39;s set</span>
-
 <span class="n">flag_addr</span> <span class="o">=</span> <span class="mh">0x400800</span>   <span class="c1"># determined by inspecting the binary</span>
-
 <span class="n">buffer_addr</span> <span class="o">=</span> <span class="mh">0x601040</span> <span class="c1"># determined by inspecting the binary</span>
-
 <span class="n">flag_start_len</span> <span class="o">=</span> <span class="mi">264</span>   <span class="c1"># determined by trial-and-error</span>
-
 <span class="n">envp_start_len</span> <span class="o">=</span> <span class="mi">8</span>     <span class="c1"># skip over 8 bytes of NULL at the end of </span>
                        <span class="c1"># the argv array to get to envp[0]</span>
  
@@ -308,14 +485,6 @@ article [itemprop="description"] {
  
 <span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div>
-</p>
-
-<p>Welp, that&rsquo;s all folks. Whaddya think?</p>
-
-<div class="alert alert-success">Thanks guys.</div>
-<div class="alert alert-info">Thanks guys.</div>
-<div class="alert alert-warning">Thanks guys.</div>
-<div class="alert alert-danger">Thanks guys.</div>
     </div>
     
     <footer>
@@ -327,16 +496,16 @@ article [itemprop="description"] {
       by <span itemprop="author">Ben Cheney</span>
     
   
-  <time datetime="2017-04-25T21:53:48&#43;09:30">
-    25 Apr, 2017
+  <time datetime="2017-04-27T22:47:58&#43;09:30">
+    27 Apr, 2017
   </time>
   
-    in <span itemprop="articleSection"><a href="/categories/ctf-writeups/">ctf-writeups</a></span>
+    in <span itemprop="articleSection"><a href="/categories/ctf-writeups/">CTF-writeups</a></span>
   
   
-    and tagged <a href="/tags/binary-exploitation/">binary-exploitation</a> and <a href="/tags/linux/">linux</a>
+    and tagged <a href="/tags/binary-exploitation/">binary-exploitation</a>, <a href="/tags/bsides-cbr-2017/">bsides-cbr-2017</a> and <a href="/tags/linux/">linux</a>
   
-  using <span itemprop="wordCount">227</span> words.
+  using <span itemprop="wordCount">1505</span> words.
 </p>
 
       
@@ -348,6 +517,10 @@ article [itemprop="description"] {
 </main>
     <footer>
   
+
+  <p class="muted">
+    0xbc's blog is © Ben Cheney, 2017. <a href="/terms">Terms.</a>
+</p>
 
 </footer>
   </body>
