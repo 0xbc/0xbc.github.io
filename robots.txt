@@ -1,1 +1,2 @@
 User-agent: *
+Sitemap: http://0xbc.blog/sitemap.xml
