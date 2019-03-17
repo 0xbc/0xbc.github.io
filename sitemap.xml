@@ -1,55 +1,64 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://0xbc.blog/</loc>
+    <loc>https://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/about/</loc>
+    <loc>https://0xbc.blog/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</loc>
+    <loc>https://0xbc.blog/about/</loc>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/tags/binary-exploitation/</loc>
+    <loc>https://0xbc.blog/categories/ctf-writeups/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/tags/bsides-cbr-2017/</loc>
+    <loc>https://0xbc.blog/categories/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/categories/ctf-writeups/</loc>
+    <loc>https://0xbc.blog/post/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/categories/</loc>
+    <loc>https://0xbc.blog/tags/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/tags/linux/</loc>
+    <loc>https://0xbc.blog/terms/</loc>
+  </url>
+  
+  <url>
+    <loc>https://0xbc.blog/tags/binary-exploitation/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/post/</loc>
+    <loc>https://0xbc.blog/tags/bsides-cbr-2017/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://0xbc.blog/tags/</loc>
+    <loc>https://0xbc.blog/tags/linux/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://0xbc.blog/terms/</loc>
   </url>
   
 </urlset>
