@@ -3,23 +3,13 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</loc>
-    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
-  </url>
-  
-  <url>
     <loc>https://0xbc.blog/</loc>
     <lastmod>2017-04-27T22:47:58+09:30</lastmod>
   </url>
   
   <url>
-    <loc>https://0xbc.blog/about/</loc>
-  </url>
-  
-  <url>
-    <loc>https://0xbc.blog/categories/ctf-writeups/</loc>
+    <loc>https://0xbc.blog/post/bsides-cbr-pwn-noob-writeup/</loc>
     <lastmod>2017-04-27T22:47:58+09:30</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -36,11 +26,8 @@
   
   <url>
     <loc>https://0xbc.blog/tags/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://0xbc.blog/terms/</loc>
   </url>
   
   <url>
@@ -59,6 +46,20 @@
     <loc>https://0xbc.blog/tags/linux/</loc>
     <lastmod>2017-04-27T22:47:58+09:30</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://0xbc.blog/categories/writeups/</loc>
+    <lastmod>2017-04-27T22:47:58+09:30</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://0xbc.blog/about/</loc>
+  </url>
+  
+  <url>
+    <loc>https://0xbc.blog/terms/</loc>
   </url>
   
 </urlset>
