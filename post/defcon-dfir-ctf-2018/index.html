@@ -20,8 +20,8 @@
 <meta property="og:description" content="A writeup for the 2018 DEF CON DFIR CTF - Part 1" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://0xbc.blog/post/defcon-dfir-ctf-2018/" />
-<meta property="article:published_time" content="2019-04-27T21:45:24&#43;09:30"/>
-<meta property="article:modified_time" content="2019-04-27T21:45:24&#43;09:30"/>
+<meta property="article:published_time" content="2019-05-07T10:34:23&#43;09:30"/>
+<meta property="article:modified_time" content="2019-05-07T10:34:23&#43;09:30"/>
 
     
 
@@ -208,9 +208,9 @@ article [itemprop="description"] {
 <meta itemprop="description" content="A writeup for the 2018 DEF CON DFIR CTF - Part 1">
 
 
-<meta itemprop="datePublished" content="2019-04-27T21:45:24&#43;09:30" />
-<meta itemprop="dateModified" content="2019-04-27T21:45:24&#43;09:30" />
-<meta itemprop="wordCount" content="0">
+<meta itemprop="datePublished" content="2019-05-07T10:34:23&#43;09:30" />
+<meta itemprop="dateModified" content="2019-05-07T10:34:23&#43;09:30" />
+<meta itemprop="wordCount" content="1258">
 
 
 
@@ -223,12 +223,12 @@ article [itemprop="description"] {
   <circle cx="16" cy="16" r="14" />
   <path d="M16 8 L16 16 20 20" />
 </svg>
-<span>0 minute read</span>
+<span>6 minute read</span>
 <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
   <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
 </svg>
 
-  Published: <time datetime="2019-04-27T21:45:24&#43;09:30">27 Apr, 2019</time>
+  Published: <time datetime="2019-05-07T10:34:23&#43;09:30">7 May, 2019</time>
 
 
       </p>
@@ -394,7 +394,7 @@ Type: $DATA (128-3)   Name: $J   Non-Resident, Sparse   size: 368717664  init_si
 # psort.py -o elastic --server $ELK_IP --port 9200 --raw_fields --index_name hrserver timeline.plaso</code></pre></div>
 <p>I used Mark Hallman&rsquo;s Windows Plaso filters, which you can find my fork of <a href="https://github.com/0xbc/plaso_filters/blob/master/filter_windows.txt">here</a>.</p>
 
-<p>Once all the data was ingested, I ran a query to search for entries in user registry hives (i.e. ntuser.dat) that contained the string &ldquo;bat&rdquo;, as There are several places in the user registry where evidence of recent files gets left lying around. The search revealed the presence of a file called C:\Production\update_app.bat (as shown below), which was the correct answer.</p>
+<p>Once all the data was ingested, I ran a query to search for entries in user registry hives (i.e. ntuser.dat) that contained the string &ldquo;bat&rdquo;, as there are several places in the user registry where evidence of recent files gets left lying around. The search revealed the presence of a file called C:\Production\update_app.bat (as shown below), which was the correct answer.</p>
 
 <p><img src="/img/defcon-dfir-2018-batch-file.png" style="width:100%"/></p>
 
@@ -406,7 +406,7 @@ Type: $DATA (128-3)   Name: $J   Non-Resident, Sparse   size: 368717664  init_si
 
 <p>OrangeHRM&hellip; sounds juicy! (Sorry.)</p>
 
-<p>There&rsquo;s a follow-up question then, which is to find the public URL for the HR system&rsquo;s portal. This can be found by diving through the Apache access logs at C:\Program\ Files/OrangeHRM/4.1/apache/logs/access.log.</p>
+<p>There&rsquo;s a follow-up question then, which is to find the public URL for the HR system&rsquo;s portal. This can be found by diving through the Apache access logs at C:\Program Files\OrangeHRM\4.1\apache\logs\access.log.</p>
 
 <pre><code>...
 74.118.139.108 - - [11/Jul/2018:13:25:31 -0700] &quot;GET /symfony/web/webres_5acde3dbd3adc6.90334155/js/jquery/validate/jquery.validate.js HTTP/1.1&quot; 200 39131 &quot;http://74.118.139.108/symfony/web/index.php/auth/login&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&quot;
@@ -440,8 +440,8 @@ Type: $DATA (128-3)   Name: $J   Non-Resident, Sparse   size: 368717664  init_si
       by <span itemprop="author">Ben Cheney</span>
     
   
-  <time itemprop="datePublished" datetime="2019-04-27T21:45:24&#43;09:30">
-    27 Apr, 2019
+  <time itemprop="datePublished" datetime="2019-05-07T10:34:23&#43;09:30">
+    7 May, 2019
   </time>
   
     in <span itemprop="articleSection"><a href="/categories/writeups/">writeups</a></span>
@@ -449,7 +449,7 @@ Type: $DATA (128-3)   Name: $J   Non-Resident, Sparse   size: 368717664  init_si
   
     and tagged <a rel="tag" href="/tags/dfir/">dfir</a> and <a rel="tag" href="/tags/linux/">linux</a>
   
-  using <span itemprop="wordCount">0</span> words.
+  using <span itemprop="wordCount">1258</span> words.
 </p>
 
       

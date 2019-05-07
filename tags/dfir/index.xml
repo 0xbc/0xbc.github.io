@@ -7,7 +7,7 @@
     <ttl>1440</ttl>
     <generator>After Dark 7.2.1 (Hugo 0.55.3)</generator>
     <language>en-AU</language>
-    <lastBuildDate>Sat, 27 Apr 2019 21:45:24 +0930</lastBuildDate>
+    <lastBuildDate>Tue, 07 May 2019 10:34:23 +0930</lastBuildDate>
     
       <atom:link href="https://0xbc.blog/tags/dfir/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
       <item>
         <title>DEF CON DFIR CTF 2018 Write-up Part 1 - HR Server Basic Challenges</title>
         <link>https://0xbc.blog/post/defcon-dfir-ctf-2018/</link>
-        <pubDate>Sat, 27 Apr 2019 21:45:24 +0930</pubDate>
+        <pubDate>Tue, 07 May 2019 10:34:23 +0930</pubDate>
         <dc:creator>Ben Cheney</dc:creator>
         <guid>https://0xbc.blog/post/defcon-dfir-ctf-2018/</guid>
         <description>Introduction I&amp;rsquo;m heading to DEF CON in Vegas this year and thinking about participating in the DFIR CTF that runs at the Blue Team Village. As a bit of a warm-up, I thought I&amp;rsquo;d give last year&amp;rsquo;s DFIR CTF a crack, which is still available to play online at the time of writing - you can find details for how to sign-up and obtain the images here. Without further ado, here&amp;rsquo;s a write-up of the challenges that I&amp;rsquo;ve managed to complete so far, which I&amp;rsquo;m writing mainly so I can remember the tools and commands for next time&amp;hellip;
@@ -37,10 +37,10 @@ I went to the event logs for the answer here, using Willi Ballenthin&amp;rsquo;s
 Saved Batch File The next requirement is to supply the name of a batch file saved by the mpowers user. At this point, I thought I&amp;rsquo;d construct a super timeline with the venerable log2timeline and import it into an ELK stack to assist further analysis.
 For my own future reference, these are the commands I used to create the super timeline and export them into Elasticsearch:
 # log2timeline.py -f filter timeline.plaso /mnt/ewf/ewf1 # psort.py -o elastic --server $ELK_IP --port 9200 --raw_fields --index_name hrserver timeline.plaso I used Mark Hallman&amp;rsquo;s Windows Plaso filters, which you can find my fork of here.
-Once all the data was ingested, I ran a query to search for entries in user registry hives (i.e. ntuser.dat) that contained the string &amp;ldquo;bat&amp;rdquo;, as There are several places in the user registry where evidence of recent files gets left lying around. The search revealed the presence of a file called C:\Production\update_app.bat (as shown below), which was the correct answer.
+Once all the data was ingested, I ran a query to search for entries in user registry hives (i.e. ntuser.dat) that contained the string &amp;ldquo;bat&amp;rdquo;, as there are several places in the user registry where evidence of recent files gets left lying around. The search revealed the presence of a file called C:\Production\update_app.bat (as shown below), which was the correct answer.
 HR Management Application The next question asks for the name of the HR management applcation that hosts a webserver. While one valid way of solving this question would be simply to inspect the contents of the Program Files folder on the filesystem, there are some clues in the Windows Firewall logs too, as shown below:
 OrangeHRM&amp;hellip; sounds juicy! (Sorry.)
-There&amp;rsquo;s a follow-up question then, which is to find the public URL for the HR system&amp;rsquo;s portal. This can be found by diving through the Apache access logs at C:\Program\ Files/OrangeHRM/4.1/apache/logs/access.log.
+There&amp;rsquo;s a follow-up question then, which is to find the public URL for the HR system&amp;rsquo;s portal. This can be found by diving through the Apache access logs at C:\Program Files\OrangeHRM\4.1\apache\logs\access.log.
 ... 74.118.139.108 - - [11/Jul/2018:13:25:31 -0700] &amp;quot;GET /symfony/web/webres_5acde3dbd3adc6.90334155/js/jquery/validate/jquery.validate.js HTTP/1.1&amp;quot; 200 39131 &amp;quot;http://74.118.139.108/symfony/web/index.php/auth/login&amp;quot; &amp;quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&amp;quot; 7 ...  File Changes This batch of questions ends on some more disk forensics. Firstly, we&amp;rsquo;re asksed to name the file that had a change recorded with an update sequence number of 368701440. Plaso had already nicely ingested the USN Journal for me, so I just searched for the number in Kibana and found it straight away:
 The final question asked for the deleted file with a &amp;ldquo;reference number&amp;rdquo; of 12947848928752043. I was a bit unsure about this one, and ended up consulting another write-up for a nudge.
 First thing to do is to convert the number into a hex value, which is 0x2E00000000F1AB. This looks a lot more meaningful and parsable. Next thing I did was to find the specification for what an NTFS &amp;ldquo;reference number&amp;rdquo; is. I found the MS docs on the topic to be fairly verbose&amp;hellip; being impatient, I looked for something more succinct and came across this link. As per the layout, the FILE record number is 0x00000000F1AB (61867), and the sequence number is 0x002E (46).
