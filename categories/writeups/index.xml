@@ -14,10 +14,10 @@
     
       <item>
         <title>DEF CON DFIR CTF 2018 Write-up Part 1 - HR Server Basic Challenges</title>
-        <link>https://0xbc.blog/post/defcon-dfir-ctf-2018/</link>
+        <link>https://0xbc.blog/post/defcon-dfir-ctf-2018-part-1/</link>
         <pubDate>Tue, 07 May 2019 10:34:23 +0930</pubDate>
         <dc:creator>Ben Cheney</dc:creator>
-        <guid>https://0xbc.blog/post/defcon-dfir-ctf-2018/</guid>
+        <guid>https://0xbc.blog/post/defcon-dfir-ctf-2018-part-1/</guid>
         <description>Introduction I&amp;rsquo;m heading to DEF CON in Vegas this year and thinking about participating in the DFIR CTF that runs at the Blue Team Village. As a bit of a warm-up, I thought I&amp;rsquo;d give last year&amp;rsquo;s DFIR CTF a crack, which is still available to play online at the time of writing - you can find details for how to sign-up and obtain the images here. Without further ado, here&amp;rsquo;s a write-up of the challenges that I&amp;rsquo;ve managed to complete so far, which I&amp;rsquo;m writing mainly so I can remember the tools and commands for next time&amp;hellip;
 </description>
         <category domain="https://0xbc.blog/categories/writeups">Writeups</category>
